@@ -1,44 +1,26 @@
 pipeline {
-  
-     agent any
+    agent any
 
-         stages {
- 
-            stage('Build') {
- 
-               steps {
-                 
-                 echo 'building the code'
-
-                 sh 'cd webapp && npm install && npm run build'
-                     }
-                }
-
-            stage('Test') {
-                
-                steps {
-                 
-                  echo 'static code analysis'
-
-                  sh 'cd webapp && sudo docker container run --rm -e SONAR_HOST_URL="http://35.222.14.246:9000" -e SONAR_LOGIN='sqp_e4f8309cea5c6323d2ce83288ddcbd4d2f27514d' -v '.:/usr/src' sonarsource/sonar-scanner-cli -Dsonar.projectKey='lms'' 
-                       }
-                }
-
-             stage('Release') {
- 
-                 steps {
-                   
-                   echo 'Pushing to Nexus repo'
-            
-                   sh 'rm -rf *.zip'
-                   
-                   sh 'cd webapp && zip lms-v2.1.zip -r dist'
-                   
-                   sh 'cd webapp && curl -v -u admin:welcome1 --upload-file lms-2.1.zip http://35.222.14.246:8081/repository/lms/'
-                       
-                        }
-
-             }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                sh 'cd webapp && npm install && npm run build'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+                sh 'cd webapp && sudo docker container run --rm -e SONAR_HOST_URL="http://35.222.14.246:9000" -e SONAR_LOGIN="sqp_e4f8309cea5c6323d2ce83288ddcbd4d2f27514d" -v ".:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
+            }
+        }
+        stage('Release') {
+            steps {
+                echo 'Release Nexus'
+                sh 'rm -rf *.zip'
+                sh 'cd webapp && zip dist-${BUILD_NUMBER}.zip -r dist'
+                sh 'cd webapp && curl -v -u $Username:$Password --upload-file dist-${BUILD_NUMBER}.zip http://35.222.14.246:8081/repository/lms/'
+            }
+        }
     }
-
-} 
+}
