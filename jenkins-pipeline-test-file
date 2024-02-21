@@ -1,20 +1,47 @@
 pipeline {
-  agent any
-    stages {
-      stage('Build') {
-         steps {
-           echo 'This is Build Step1'
-              }
-          }
-      stage('test') {
-          steps {
-            echo 'This is test step'
+  
+     agent any
+
+         stages {
+ 
+            stage('build') {
+ 
+               steps {
+                 
+                 echo "building the code"
+
+                 sh "cd webapp && npm install && npm run build"
+                     }
                 }
-         }
-      stage('Deploy') {
-         steps {
-           echo 'This is Deploy step'
-      }
-}
-}
-}
+
+            stage('SonarTest') {
+                
+                steps {
+                 
+                  echo "static code analysis"
+
+                  sh "cd webapp && sudo docker container run --rm --name sonarscanner -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=lms" -e SONAR_HOST_URL="http://35.222.14.246:9000/" -e SONAR_TOKEN="sqp_e4f8309cea5c6323d2ce83288ddcbd4d2f27514d" -v "/home/ubuntu/lms/webapp:/usr/src" sonarsource/sonar-scanner-cli"
+                  
+                       }
+                }
+
+             stage('Pushing to Nexus') {
+ 
+                 steps {
+                   
+                   echo "Pushing to Nexus repo"
+            
+                  sh "rm -rf *.zip"
+                   
+                   sh "cd webapp && zip lms-v2.1.zip -r dist" 
+                   
+                   sh "cd webapp && curl -v -u admin:welcome1 --upload-file lms-2.1.zip http://35.222.14.246:8081/repository/lms/"
+                       
+                        }
+
+             }
+
+
+              
+                 
+        
