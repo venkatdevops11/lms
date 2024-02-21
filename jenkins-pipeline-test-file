@@ -1,5 +1,8 @@
 pipeline {
     agent any
+       environment {
+          NEXUS_CRED = credentials('nexus')
+        }
 
     stages {
         stage('Build') {
@@ -19,7 +22,7 @@ pipeline {
                 echo 'Release Nexus'
                 sh 'rm -rf *.zip'
                 sh 'cd webapp && zip dist-${BUILD_NUMBER}.zip -r dist'
-                sh 'cd webapp && curl -v -u $Username:$Password --upload-file dist-${BUILD_NUMBER}.zip http://35.222.14.246:8081/repository/lms/'
+                sh 'cd webapp && curl -v -u $NEXUS_CRED_USR:$NEXUS_CRED_PSW --upload-file dist-${BUILD_NUMBER}.zip http://35.222.14.246:8081/repository/lms/'
             }
         }
     }
