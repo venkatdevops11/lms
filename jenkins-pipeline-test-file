@@ -20,7 +20,7 @@ pipeline {
                  
                   echo 'static code analysis'
 
-                  sh 'cd webapp && sudo docker container run --rm -e SONAR_HOST_URL='http://35.222.14.246:9000' -e SONAR_LOGIN='sqp_e4f8309cea5c6323d2ce83288ddcbd4d2f27514d' -v '.:/usr/src' sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms' 
+                  sh 'cd webapp && sudo docker container run --rm -e SONAR_HOST_URL="http://35.222.14.246:9000" -e SONAR_LOGIN='sqp_e4f8309cea5c6323d2ce83288ddcbd4d2f27514d' -v '.:/usr/src' sonarsource/sonar-scanner-cli -Dsonar.projectKey='lms'' 
                        }
                 }
 
