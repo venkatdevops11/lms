@@ -4,7 +4,7 @@ pipeline {
 
          stages {
  
-            stage('build') {
+            stage('Build') {
  
                steps {
                  
@@ -14,7 +14,7 @@ pipeline {
                      }
                 }
 
-            stage('SonarTest') {
+            stage('Test') {
                 
                 steps {
                  
@@ -25,13 +25,13 @@ pipeline {
                        }
                 }
 
-             stage('Pushing to Nexus') {
+             stage('Release') {
  
                  steps {
                    
                    echo "Pushing to Nexus repo"
             
-                  sh "rm -rf *.zip"
+                   sh "rm -rf *.zip"
                    
                    sh "cd webapp && zip lms-v2.1.zip -r dist" 
                    
