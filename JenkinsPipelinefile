@@ -17,7 +17,7 @@ pipeline {
 }
        stage("Nexus Deploy") {
           steps {
-                   sh 'cd webapp && zip -r lms-$(BUILD_NUMBER).zip dist/'
+                   sh 'cd webapp && zip lms-$(BUILD_NUMBER).zip -r dist'
                    sh 'cd webapp && curl -v -u admin:welcome1 --upload-file lms-${BUILD_NUMBER}.zip http://34.170.151.27:8081/repository/lms/'
                 }
 }
